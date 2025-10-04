@@ -11,3 +11,14 @@ jobs:
         run: |
           node -v
           npm -v
+  parel-jobs:
+    runs-on: macos-latest
+    steps:
+      - name: chack connraction
+        run: ping 8.8.8.8
+  avalivelty:
+    runs-on: windows-latest
+    needs: parel-jobs
+    steps:
+      - name: ip cheack
+        run: Write-Host "8.8.8.8 is avalievle"
