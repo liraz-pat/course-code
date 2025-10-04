@@ -12,7 +12,7 @@ jobs:
           node -v
           npm -v
   parel-jobs:
-    runs-on: macos-latest
+    runs-on: windows-latest
     steps:
       - name: chack connraction
         run: ping 8.8.8.8
