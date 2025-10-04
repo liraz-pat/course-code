@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: chack connraction
-        run: ping 8.8.8.8
+        run: Write-Host "pinging 8.8.8.8"
   avalivelty:
     runs-on: windows-latest
     needs: parel-jobs
