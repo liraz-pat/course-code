@@ -1,5 +1,10 @@
 name: repositery events
-on: [push,pull_request,issues]
+on:
+  push:
+  pull_request:
+    types: [opened, assigned, synchronize, reopened]
+  issues:
+    types: [opened]
 
 jobs:
   chekout-test:
