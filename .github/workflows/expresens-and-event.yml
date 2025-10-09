@@ -1,0 +1,15 @@
+name: Expressions & Context
+on: [pull_request,issues,push,workflow_dispatch]
+
+jobs:
+  using-context-and-expresions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Expressions
+        id: expressions
+        run: |
+         echo '${{toJSON(github)}}'
+         echo '${{toJSON(runner)}}'
+         echo '${{toJSON(job)}}'
+         echo '${{toJSON(secrets)}}'
+         echo'${{toJSON(steps)}}'
