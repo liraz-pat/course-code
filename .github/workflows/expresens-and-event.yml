@@ -8,8 +8,8 @@ jobs:
       - name: Expressions
         id: expressions
         run: |
-          echo "${{ toJSON(github) }}"
-          echo "${{ toJSON(runner) }}"
-          echo "${{ toJSON(job) }}"
-          echo "${{ toJSON(secrets) }}"
-          echo "${{ toJSON(steps) }}"
+          printf '%s\n' '${{ toJSON(github) }}'
+          printf '%s\n' '${{ toJSON(runner) }}'
+          printf '%s\n' '${{ toJSON(job) }}'
+          printf '%s\n' '${{ toJSON(secrets) }}'
+          printf '%s\n' '${{ toJSON(steps) }}'
