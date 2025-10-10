@@ -2,7 +2,14 @@ name: Expressions & Context
 on: [pull_request, issues, push, workflow_dispatch]
 run-name: "Expressions & Context was triger by @'${{github.actor}}' event type @'${{github.event_name}}'"
 jobs:
+  if-and-else-uses:
+    runs-on: ubuntu-latest
+    if: '${{github.event_name}}'=="issues"
+    steps:
+      - name: print string
+        run: echo "the event was trigerd by" '${{github.event_name}}'
   using-context-and-expressions:
+    needs: if-and-else-uses
     runs-on: ubuntu-latest
     steps:
       - name: Expressions
