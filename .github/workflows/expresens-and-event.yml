@@ -4,7 +4,7 @@ run-name: "Expressions & Context was triger by @'${{github.actor}}' event type @
 jobs:
   if-and-else-uses:
     runs-on: ubuntu-latest
-    if: '${{github.event_name}}'=="issues"
+    if: '${{github.event_name == 'issues'}}'
     steps:
       - name: print string
         run: echo "the event was trigerd by" '${{github.event_name}}'
