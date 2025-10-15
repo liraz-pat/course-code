@@ -1,0 +1,55 @@
+name: Dynamic-Matrix (clean)
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: OS list (comma separated)
+        default: "windows-latest,ubuntu-latest"
+        type: string
+      node-version:
+        description: Node list (comma separated)
+        default: "14,15,16"
+        type: string
+
+jobs:
+  prepare-matrix:                # <- keep this exact id; used by "needs"
+    runs-on: ubuntu-latest
+    outputs:                     # map step outputs to job outputs
+      os-array:   ${{ steps.build.outputs.os }}
+      node-array: ${{ steps.build.outputs.node }}
+    steps:
+      - id: build
+        shell: bash
+        run: |
+          # Read dispatch inputs
+          OS_INPUT="${{ github.event.inputs.os }}"
+          NODE_INPUT="${{ github.event.inputs['node-version'] }}"
+
+          # Turn "a,b,c" into ["a","b","c"] (trim spaces too)
+          OS_JSON=$(printf '%s' "$OS_INPUT"   | jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
+          NODE_JSON=$(printf '%s' "$NODE_INPUT"| jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
+
+          # Expose as step outputs (strings containing JSON)
+          echo "os=$OS_JSON"       >> "$GITHUB_OUTPUT"
+          echo "node=$NODE_JSON"   >> "$GITHUB_OUTPUT"
+
+      - name: Debug show step outputs (optional)
+        run: |
+          echo "OS JSON:   ${{ steps.build.outputs.os }}"
+          echo "Node JSON: ${{ steps.build.outputs.node }}"
+
+  node-matrix:
+    needs: prepare-matrix
+    strategy:
+      matrix:
+        # IMPORTANT: no quotes here — matrix expects arrays/objects
+        os:           ${{ fromJSON(needs.prepare-matrix.outputs['os-array']) }}
+        node-version: ${{ fromJSON(needs.prepare-matrix.outputs['node-array']) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix['node-version'] }}
+      - run: node -v
+      - run: echo '${{ toJSON(matrix) }}'
