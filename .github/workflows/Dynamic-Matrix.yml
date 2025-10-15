@@ -15,9 +15,9 @@ jobs:
   prepar-metrix:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "step-output=value" >> "$Github.output"
+      - run: echo "step-output=value" >> "$GITHUB.OUTPUT"
         id: step-1
-      - run: echo "step-output=value 2" >> "$Github.output"
+      - run: echo "step-output=value 2" >> "$GITHUB.OUTPUT"
         id: step-2
       - run: | 
          echo "${{steps.step-1.outputs.step-output}}"
