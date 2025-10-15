@@ -1,48 +1,49 @@
 name: Dynamic-Matrix.yml
+
 on:
   workflow_dispatch:
     inputs:
       os:
-        description: An os required
+        description: An OS list (comma separated)
         type: string
         default: "windows-latest,ubuntu-latest"
       node-version:
-        description: Node version
+        description: Node versions (comma separated)
         type: string
         default: "14,15,16"
-
 
 jobs:
   prepare-metrix:
     runs-on: ubuntu-latest
     outputs:
-      os:   ${{ steps.build.outputs.OS}}
-      node: ${{ steps.build.outputs.NODE }}
+      os:   ${{ steps.build.outputs.os }}
+      node: ${{ steps.build.outputs.node }}
     steps:
       - id: build
         shell: bash
         run: |
-               echo "OS=${{inputs.os}}" >> "$GITHUB_OUTPUT" 
-               echo "NODE=${{inputs.node-version}}" >> "$GITHUB_OUTPUT"
-     
+          # Read inputs
+          OS_INPUT='${{ github.event.inputs.os }}'
+          NODE_INPUT='${{ github.event.inputs.node-version}}'
 
-  # Turn "a,b,c" into ["a","b","c"]
-          OS_JSON=$(printf '%s' "$OS"   | jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
-          NODE_JSON=$(printf '%s' "$NODE"| jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
+          # Convert "a,b,c" -> ["a","b","c"] (trim spaces, drop empties)
+          OS_JSON=$(printf '%s' "$OS_INPUT"   | jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
+          NODE_JSON=$(printf '%s' "$NODE_INPUT"| jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
 
+          # Expose as step outputs (strings containing JSON)
           echo "os=$OS_JSON"     >> "$GITHUB_OUTPUT"
           echo "node=$NODE_JSON" >> "$GITHUB_OUTPUT"
 
-      # optional debug
-      - run: |
-          echo "OS JSON:   ${{ steps.build.outputs.OS }}"
-          echo "NODE JSON: ${{ steps.build.outputs.NODE }}"
+      - name: Debug (optional)
+        run: |
+          echo "OS JSON:   ${{ steps.build.outputs.os }}"
+          echo "NODE JSON: ${{ steps.build.outputs.node }}"
 
   node-matrix:
     needs: prepare-metrix
     strategy:
       matrix:
-        # IMPORTANT: no quotes here—matrix expects arrays/objects, not strings
+        # IMPORTANT: do not wrap fromJSON(...) in quotes
         os:           ${{ fromJSON(needs.prepare-metrix.outputs.os) }}
         node-version: ${{ fromJSON(needs.prepare-metrix.outputs.node) }}
     runs-on: ${{ matrix.os }}
