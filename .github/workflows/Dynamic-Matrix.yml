@@ -3,47 +3,50 @@ on:
   workflow_dispatch:
     inputs:
       os:
-        description: An os reuired
+        description: An os required
         type: string
         default: "windows-latest,ubuntu-latest"
       node-version:
         description: Node version
-        default: "14,15,16"
         type: string
+        default: "14,15,16"
 
 jobs:
   prepare-metrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix-arrays: ${{steps.matrix-arrays.outputs.result}}
+      os:   ${{ steps.build.outputs.os }}
+      node: ${{ steps.build.outputs.node }}
     steps:
-      - uses: actions/github-script@v6
-        id: matrix-arrays
-        with:
-          script: "return {os: context.payload.inputs['os'].split(','), 'node-version': context.payload.inputs['node-version'].split(',') }"
-          result-encoding: json
-      - run: echo "${{steps.matrix-arrays.outputs.result}}"
+      - id: build
+        shell: bash
+        run: |
+          OS_INPUT='${{ github.event.inputs.os }}'
+          NODE_INPUT='${{ github.event.inputs['node-version'] }}'
 
-      - run: echo "step-output=value" >> "$GITHUB_OUTPUT"
-        id: step-1
-      - run: echo "step-output=value 2" >> "$GITHUB_OUTPUT"
-        id: step-2
-      - run: | 
-         echo "${{steps.step-1.outputs.step-output}}"
-         echo "${{steps.step-2.outputs.step-output}}"
+          # Turn "a,b,c" into ["a","b","c"]
+          OS_JSON=$(printf '%s' "$OS_INPUT"   | jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
+          NODE_JSON=$(printf '%s' "$NODE_INPUT"| jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
+
+          echo "os=$OS_JSON"     >> "$GITHUB_OUTPUT"
+          echo "node=$NODE_JSON" >> "$GITHUB_OUTPUT"
+
+      # optional debug
+      - run: |
+          echo "OS JSON:   ${{ steps.build.outputs.os }}"
+          echo "NODE JSON: ${{ steps.build.outputs.node }}"
 
   node-matrix:
     needs: prepare-metrix
     strategy:
       matrix:
-        os: "${{ fromJSON(needs.prepare-metrix.outputs.metrix-arrey)}}"
-        node-version: "${{fromJSON(needs.prepare-metrix.outputs.metrix-arrey)}}"
-
+        # IMPORTANT: no quotes here—matrix expects arrays/objects, not strings
+        os:           ${{ fromJSON(needs.prepare-metrix.outputs.os) }}
+        node-version: ${{ fromJSON(needs.prepare-metrix.outputs.node) }}
     runs-on: ${{ matrix.os }}
     steps:
-      - run: node -v
-      - run: echo '${{ toJson(matrix) }}'
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ matrix['node-version'] }}
       - run: node -v
+      - run: echo '${{ toJSON(matrix) }}'
