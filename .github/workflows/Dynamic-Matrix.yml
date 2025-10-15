@@ -15,26 +15,27 @@ jobs:
   prepare-metrix:
     runs-on: ubuntu-latest
     outputs:
-      os:   ${{ steps.build.outputs.os }}
-      node: ${{ steps.build.outputs.node }}
+      os:   ${{ steps.build.outputs.OS}}
+      node: ${{ steps.build.outputs.NODE }}
     steps:
       - id: build
         shell: bash
         run: |
-          OS_INPUT='${{ github.event.inputs.os }}'
-          NODE_INPUT='${{ github.event.inputs['node-version'] }}'
+               echo "OS=${{inputs.os}}" >> "$GITHUB_OUTPUT" 
+               echo "NODE=${{inputs.node-version}}" >> "$GITHUB_OUTPUT"
+     
 
-          # Turn "a,b,c" into ["a","b","c"]
-          OS_JSON=$(printf '%s' "$OS_INPUT"   | jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
-          NODE_JSON=$(printf '%s' "$NODE_INPUT"| jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
+  # Turn "a,b,c" into ["a","b","c"]
+          OS_JSON=$(printf '%s' "$OS"   | jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
+          NODE_JSON=$(printf '%s' "$NODE"| jq -R 'split(",") | map(gsub("^\\s+|\\s+$";"")) | map(select(. != ""))')
 
           echo "os=$OS_JSON"     >> "$GITHUB_OUTPUT"
           echo "node=$NODE_JSON" >> "$GITHUB_OUTPUT"
 
       # optional debug
       - run: |
-          echo "OS JSON:   ${{ steps.build.outputs.os }}"
-          echo "NODE JSON: ${{ steps.build.outputs.node }}"
+          echo "OS JSON:   ${{ steps.build.outputs.OS }}"
+          echo "NODE JSON: ${{ steps.build.outputs.NODE }}"
 
   node-matrix:
     needs: prepare-metrix
