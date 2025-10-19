@@ -1,0 +1,19 @@
+name: greeting-action
+description: sends greeting to ua user
+
+inputs:
+  who_to_greet:
+    description: "who to greet?"
+    required: true
+    default: word
+outputs:
+  time:
+    description: "time of the greeting"
+
+runs:
+  using: node16
+  main: "dist/index.js"
+  pre: "setup.js"
+  pre-if: runner.os == 'linux'
+  post: "cleanup.js"
+  post-if: runner.os == 'linux'
