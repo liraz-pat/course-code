@@ -1,0 +1,22 @@
+name: hello-docker
+author: liraz
+description: sends greeting to ua user
+
+inputs:
+  who_to_greet:
+    description: "who to greet?"
+    required: true
+    default: word
+outputs:
+  time:
+    description: "time of the greeting"
+
+runs:
+  using: docker
+  image: 'dockerfile'
+  args:
+    - "${{inputs.who_to_greet}}"
+  env:
+    HELLO: word
+  post-entrypoint: "/cleanup.sh"
+  post-if: runner.os == 'linux'
