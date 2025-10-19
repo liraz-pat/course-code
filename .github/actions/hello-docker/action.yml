@@ -5,7 +5,7 @@ description: sends greeting to ua user
 inputs:
   who_to_greet:
     description: "who to greet?"
-    required: true
+    #required: true
     default: word
 outputs:
   time:
@@ -13,10 +13,10 @@ outputs:
 
 runs:
   using: docker
-  image: 'dockerfile'
+  image: 'Dockerfile'
   args:
     - "${{inputs.who_to_greet}}"
   env:
     HELLO: word
   post-entrypoint: "/cleanup.sh"
-  post-if: runner.os == 'linux'
+  post-if: runner.os == 'Linux'
