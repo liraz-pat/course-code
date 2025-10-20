@@ -21,16 +21,14 @@ jobs:
           echo "new_env=universal ENV" >> "$GITHUB_ENV"
           echo "WF_LEVEL_ENV=$RANDOM" >> "$GITHUB_ENV"
       - name: set multiple values
-        run: |
+        run: | 
           {
-            echo "multiple_vl<<DELIM"
-            echo "here is a joke and a number"
-            # get a plain-text joke safely
-            curl -s -H "Accept: text/plain" https://icanhazdadjoke.com/
-            # append a random number line
-            echo "$RANDOM"
-            echo "DELIM"
-          } >> "$GITHUB_ENV"
+          echo "multiple_vl<<delimiter"
+          echo "here is a joke and a number"
+          curl -s -H "Accept: text/plain" https://icanhazdadjoke.com/
+          echo "$RANDOM"
+          echo "delimiter"
+          } >> $GITHUB_ENV
 
       - name: Log Custom ENV Vars
         env:
