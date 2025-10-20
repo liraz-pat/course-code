@@ -23,6 +23,7 @@ jobs:
       - name: set multiple values
         run: | 
           {
+          delimiter=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "multiple_vl<<delimiter"
           echo "here is a joke and a number"
           curl -s -H "Accept: text/plain" https://icanhazdadjoke.com/
