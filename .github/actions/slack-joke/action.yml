@@ -42,5 +42,5 @@ runs:
       env:
         SLACK_WEBHOOK: ${{ inputs.SLACK_WEBHOOK }}
         SLACK_TITLE: Random joke
-        SLACK_MESSAGE: "${{inputs.Slack_Username && format('{0},{1}, {3}', '@',inputs.Slack_Username ,steps.joke.outputs.RANDOM_JOKE) || steps.joke.outputs.RANDOM_JOKE}}"
+        SLACK_MESSAGE: "${{inputs.Slack_Username && format('{0},{1}, {2}', '@',inputs.Slack_Username , steps.joke.outputs.RANDOM_JOKE) || steps.joke.outputs.RANDOM_JOKE}}"
         SLACK_COLOR: "#723fc4"
