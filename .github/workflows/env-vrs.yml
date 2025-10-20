@@ -31,6 +31,7 @@ jobs:
           echo "$RANDOM"
           echo "$delimiter"
           } >> $GITHUB_ENV
+          echo "delimiter=$delimiter" >> "$GITHUB_ENV"
 
       - name: Log Custom ENV Vars
         env:
