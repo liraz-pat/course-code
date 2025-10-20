@@ -28,7 +28,7 @@ jobs:
           curl -s https://icanhazdadjoke.com/ "" 
           "$RANDOM"
           echo delimiter
-          } >> GITHUB_ENV
+          } >> $GITHUB_ENV
 
       - name: Log Custom ENV Vars
         env:
