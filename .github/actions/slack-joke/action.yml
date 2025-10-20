@@ -1,0 +1,45 @@
+name: slack-joke
+author: liraz
+description: slack-joke
+inputs:
+  Slack_Username:
+    description: Slack_Username
+  Upload_Joke:
+    description: upload joke as artifact
+  SLACK_WEBHOOK:
+    description: Slack Webhook
+outputs:
+  joke:
+    description: The Ganrated Joke
+    value: '${{steps.joke.outputs.RANDOM_JOKE}}'
+
+runs:
+  using: composite
+  steps:
+    - name: create joke
+      shell: bash
+      id: joke
+      run: |
+        DELIMITER=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        echo "RANDOM_JOKE<<$DELIMITER" >> "$GITHUB_OUTPUT"
+        echo "Here is a joke: " >> "$GITHUB_ENV"
+        curl -s -H "Accept: text/plain" https://icanhazdadjoke.com/ >> "$GITHUB_OUTPUT"
+        echo "" >> "$GITHUB_OUTPUT"
+        echo "$DELIMITER" >> "$GITHUB_OUTPUT"
+    - name: Ganarate joke file
+      shell: bash
+      run: |
+       echo "${{steps.joke.outputs.RANDOM_JOKE}}" > joke.txt
+      if: inputs.Upload_Joke
+    - name: upload artifact
+      if: inputs.Upload_Joke
+      uses: actions/upload-artifact@v4
+      with: joke_file
+      path: joke.txt
+    - name: Send a slack message
+      uses: docker://technosophos/slack-notify
+      env:
+        SLACK_WEBHOOK: ${{ inputs.SLACK_WEBHOOK }}
+        SLACK_TITLE: Random joke
+        SLACK_MESSAGE: "${{inputs.Slack_Username && format('{0},{1}, {3}', '@',inputs.Slack_Username ,steps.joke.outputs.RANDOM_JOKE) || steps.joke.outputs.RANDOM_JOKE}}"
+        SLACK_COLOR: "#723fc4"

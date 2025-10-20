@@ -1,9 +1,0 @@
-name: checkoutWorkflow.yml
-on: push
-
-jobs:
- CHecout-action:
-   runs-on: ubuntu-latest
-   steps:
-     - name: Checkout
-       uses: actions/checkout@v5.0.0
