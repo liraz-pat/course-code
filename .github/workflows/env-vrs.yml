@@ -21,9 +21,10 @@ jobs:
           echo "new_env=universal ENV" >> "$GITHUB_ENV"
           echo "WF_LEVEL_ENV=$RANDOM" >> "$GITHUB_ENV"
       - name: set multiple values
-        run: | 
+        run: |
+          delimiter=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "Generated delimiter: $delimiter"
           {
-          $delimiter=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "multiple_vl<<$delimiter"
           echo "here is a joke and a number"
           curl -s -H "Accept: text/plain" https://icanhazdadjoke.com/
