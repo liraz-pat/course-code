@@ -25,8 +25,8 @@ jobs:
           {
          echo "multiple_vl<<delimiter"
           echo "here is a joke and a number"
-          curl -s https://icanhazdadjoke.com/ "" 
-          "$RANDOM"
+          curl -s https://icanhazdadjoke.com/ 
+          echo "$RANDOM"
           echo delimiter
           } >> $GITHUB_ENV
 
