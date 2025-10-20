@@ -20,6 +20,16 @@ jobs:
         run: |
           echo "new_env=universal ENV" >> "$GITHUB_ENV"
           echo "WF_LEVEL_ENV=$RANDOM" >> "$GITHUB_ENV"
+      - name: set multiple values
+        run: | 
+          {
+         echo "multiple_vl<<delimiter"
+          echo "here is a joke and a number"
+          curl -s https://icanhazdadjoke.com/ "" 
+          "$RANDOM"
+          echo delimiter
+          } >> GITHUB_ENV
+
       - name: Log Custom ENV Vars
         env:
           STEP_LEVEL_ENV: Available to only this step
@@ -30,3 +40,4 @@ jobs:
           echo $WF_LEVEL_ENV
           echo $JOB_LEVEL_ENV
           echo $new_env
+          echo $multiple_vl
