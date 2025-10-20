@@ -42,3 +42,4 @@ jobs:
           echo $JOB_LEVEL_ENV
           echo $new_env
           echo $multiple_vl
+          echo $delimiter
