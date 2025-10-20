@@ -22,7 +22,7 @@ runs:
       run: |
         DELIMITER=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         echo "RANDOM_JOKE<<$DELIMITER" >> "$GITHUB_OUTPUT"
-        echo "Here is a joke: " >> "$GITHUB_ENV"
+        echo "Here is a joke: " >> "$GITHUB_OUTPUT"
         curl -s -H "Accept: text/plain" https://icanhazdadjoke.com/ >> "$GITHUB_OUTPUT"
         echo "" >> "$GITHUB_OUTPUT"
         echo "$DELIMITER" >> "$GITHUB_OUTPUT"
@@ -34,8 +34,9 @@ runs:
     - name: upload artifact
       if: inputs.Upload_Joke
       uses: actions/upload-artifact@v4
-      with: joke_file
-      path: joke.txt
+      with:
+        name: 'joke file'
+        path: joke.txt
     - name: Send a slack message
       uses: docker://technosophos/slack-notify
       env:
