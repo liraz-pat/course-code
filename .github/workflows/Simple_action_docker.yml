@@ -1,4 +1,4 @@
-name: Simple action
+name: Simple action docker
 on: push
 
 jobs:
@@ -14,4 +14,4 @@ jobs:
           who_to_greet: 'the creator'
       - name: Display the man of the greeting
         run: |
-          echo "'${{steps.greeting.outputs.name}}' on '${{steps.greeting.outputs.time}}'"
+          echo "Name='${{ steps.greeting.outputs.name }}' Time='${{ steps.greeting.outputs.time }}'"

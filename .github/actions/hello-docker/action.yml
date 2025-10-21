@@ -9,9 +9,9 @@ inputs:
     default: word
 outputs:
   time:
-    description: "time of the greeting: '${{Hello_TIME}}'"
+    description: "time of the greeting"
   name:
-    description: "I Greet you '${{man_to_greet}}'"
+    description: "I Greet you"
 
 
 runs:
