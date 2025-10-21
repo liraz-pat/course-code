@@ -14,4 +14,4 @@ jobs:
           who_to_greet: 'the creator'
       - name: Display the man of the greeting
         run: |
-          echo "Name='${{ steps.greeting.outputs.name }}' Time='${{ steps.greeting.outputs.time }}'"
+          echo "I Greet you: '${{ steps.greeting.outputs.name }}' On: '${{ steps.greeting.outputs.time }}'"
