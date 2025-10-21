@@ -9,7 +9,10 @@ inputs:
     default: word
 outputs:
   time:
-    description: "time of the greeting"
+    description: "time of the greeting: '${{Hello_TIME}}'"
+  name:
+    description: "I Greet you '${{man_to_greet}}'"
+
 
 runs:
   using: docker
@@ -18,5 +21,6 @@ runs:
     - "${{inputs.who_to_greet}}"
   env:
     HELLO: word
+    NAME: '${{inputs.who_to_greet}}'
   post-entrypoint: "/cleanup.sh"
   post-if: runner.os == 'Linux'
