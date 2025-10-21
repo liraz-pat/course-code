@@ -11,5 +11,5 @@ jobs:
       - name: send slack message
         uses: ./.github/actions/slack-php-docker
         with:
-          slack_webhook: ${{ secrets.SLACK_WEBHOO }}
+          slack_webhook: ${{ secrets.SLACK_WEBHOOK }}
           message: It Works!!
